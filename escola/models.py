@@ -1,6 +1,22 @@
 from django.db import models # type: ignore
 from django.core.validators import MinLengthValidator # type: ignore
 
+'''
+para implementar CPF real:
+    rode o comando
+        pip intall django-cpf
+    va no settings.py ... adicione esse cara abaixo
+        INSTALLED_APPS[
+        'cpf_fields',
+        ] 
+volte para models e importe os campos abaixo
+
+from django.db import models
+from cpf_field.models import CPFField
+
+na sua class coloque 
+cpf = CPFField('cpf')
+'''
 
 class Estudante(models.Model):
     nome = models.CharField(max_length=100)

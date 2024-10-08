@@ -12,12 +12,12 @@ class EstudanteViewSet(viewsets.ModelViewSet):
     essa funcao não é necessaria aqui pois é chamada lá em settings
     authentication_classes = [BasicAuthentication]
     '''
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Estudante.objects.all()
     serializer_class = EstudanteSerializer
     
 class CursoViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
     
@@ -27,14 +27,14 @@ class MatriculaViewSet(viewsets.ModelViewSet):
     serializer_class = MatriculaSerializers
 
 class ListaMatriculaEstudante(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     def get_queryset(self):
         queryset = Matricula.objects.filter(estudante_id=self.kwargs['pk'])
         return queryset
     serializer_class = ListaMatriculasEstudanteSerializer
     
 class ListaMatriculaCurso(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     def get_queryset(self):
         queryset = Matricula.objects.filter(curso_id=self.kwargs['pk'])
         return queryset
