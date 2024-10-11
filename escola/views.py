@@ -1,5 +1,7 @@
-from escola.models import Estudante, Curso, Matricula
-from escola.serializers import EstudanteSerializer, CursoSerializer, MatriculaSerializers, ListaMatriculasCursoSerializer, ListaMatriculasEstudanteSerializer
+from escola.models import Estudante, Curso, Matricula, Campus, Predio, Sala
+from escola.serializers import EstudanteSerializer, CursoSerializer, MatriculaSerializers,\
+    ListaMatriculasCursoSerializer, ListaMatriculasEstudanteSerializer, \
+    CampusSerializer, PredioSerializer, SalaSerializer
 from rest_framework import viewsets, generics, filters # type: ignore
 '''
 from rest_framework.authentication import BasicAuthentication # type: ignore
@@ -24,6 +26,21 @@ class CursoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
+
+class CampusViewSet(viewsets.ModelViewSet):
+    permission_class = [IsAdminUser]
+    queryset = Campus.objects.all()
+    serializer_class = CampusSerializer
+
+class PredioViewSet(viewsets.ModelViewSet):
+    permission_class = [IsAdminUser]
+    queryset = Predio.objects.all()
+    serializer_class = PredioSerializer
+
+class SalaViewSet(viewsets.ModelViewSet):
+    permission_class = [IsAdminUser]
+    queryset = Sala.objects.all()
+    serializer_class = SalaSerializer
     
 class MatriculaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]

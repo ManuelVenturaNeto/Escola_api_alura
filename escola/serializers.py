@@ -1,5 +1,5 @@
 from rest_framework import serializers # type: ignore
-from escola.models import Estudante, Curso, Matricula
+from escola.models import Estudante, Curso, Matricula, Campus, Predio, Sala
 from escola.validators import nome_invalido, cpf_invalido, celular_invalido
 
 
@@ -17,6 +17,7 @@ class EstudanteSerializer(serializers.ModelSerializer):
         if celular_invalido(dados['celular']):
             raise serializers.ValidationError({'celular':'O celular precisa seguir o modelo: 12 12345-1234 (repeitando traços e espaços)!'})
         return dados
+    
     
     '''
     #agora a validadação está vindo de validators mas ela poderia estar aqui:
@@ -46,19 +47,60 @@ class EstudanteSerializer(serializers.ModelSerializer):
         return celular
     '''
     
+    
 class CursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Curso
         fields = '__all__'
         
+
+class CampusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campus
+        fields = '__all__'
+    def validate_numero_do_campus(self, numero_do_campus):
+        #Aqui diz quantos campus a universidade tem atualmente
+        #Hoje ela tem 7 campus, pois tinha 8 mas vendeu o 3
+        if numero_do_campus < 1 or numero_do_campus > 8 or numero_do_campus == 3:
+            raise serializers.ValidationError('O campus que você especificou não existe!')
+        return numero_do_campus
+    def validate_status_campus(self, status_campus):
+        if status_campus != 'L':
+            raise serializers.ValidationError('O campus não está liberado para uso!')
+        return status_campus
+        
+class PredioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Predio
+        fields = '__all__'
+    def validate_numero_do_predio(self, numero_do_predio):
+        if numero_do_predio < 1 or numero_do_predio > Campus.limite_de_predios:
+            raise serializers.ValidationError('O predio que você busca não existe no campus que voce está cadastrando!')
+        return numero_do_predio
+    def validate_status_predio(self, status_predio):
+        if status_predio != 'L':
+            raise serializers.ValidationError('O predio não está liberado para uso!')
+        return status_predio
     
+class SalaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sala
+        fields = '__all__'
+    def validate_numero_da_sala(self, numero_da_sala):
+        if numero_da_sala < 1 or numero_da_sala > Predio.limite_de_salas:
+            raise serializers.ValidationError('A sala que você busca não existe no predio que você está cadastrando!')
+        return numero_da_sala
+    def validate_status_sala(self, status_sala):
+        if status_sala != 'L':
+            raise serializers.ValidationError('A sala não está liberada para uso!')
+        return status_sala
+
         
 class MatriculaSerializers (serializers.ModelSerializer):
     class Meta:
         model = Matricula
-        exclude = []
+        exclude = []    
         
-    
         
 class ListaMatriculasEstudanteSerializer(serializers.ModelSerializer):
     curso_descricao = serializers.ReadOnlyField(source='curso.descricao')
