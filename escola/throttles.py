@@ -1,5 +1,4 @@
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle # type: ignore
-
+from rest_framework.throttling import AnonRateThrottle
 
 class MatriculaAnonRateThrottle(AnonRateThrottle):
     rate = '5/day'
